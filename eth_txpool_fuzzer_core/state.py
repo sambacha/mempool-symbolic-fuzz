@@ -1,4 +1,3 @@
-# eth_txpool_fuzzer_core/state.py
 """
 Functions for analyzing and symbolizing the state of the Ethereum transaction pool.
 Includes logic for calculating "energy" of a state to guide fuzzing.
@@ -8,19 +7,15 @@ from typing import Dict, Any, List
 
 from . import config as core_config
 
-# TODO: Set up a proper logger for this module
-# import logging
-# logger = logging.getLogger(__name__)
 
 class SenderTxSummary:
     """Helper class to store summary info about a sender's first pending transaction."""
     def __init__(self, sender_address: str, first_tx_price: int, tx_count: int):
         self.sender_address: str = sender_address
         self.first_tx_price: int = first_tx_price
-        self.tx_count: int = tx_count # Total pending txs for this sender
+        self.tx_count: int = tx_count
 
     def __lt__(self, other: 'SenderTxSummary') -> bool:
-        # For sorting senders primarily by the gas price of their first transaction.
         return self.first_tx_price < other.first_tx_price
 
 def get_symbolic_pool_state(

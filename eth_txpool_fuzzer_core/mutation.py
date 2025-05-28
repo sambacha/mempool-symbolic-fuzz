@@ -1,4 +1,3 @@
-# eth_txpool_fuzzer_core/mutation.py
 """
 Defines strategies and functions for mutating transaction sequences (fuzzing inputs).
 """
@@ -9,13 +8,9 @@ from typing import List, Dict, Any, Optional, Tuple
 from .tx import FuzzTx, FuzzInput
 from .accounts import AccountManager
 from . import config as core_config
-from .clients.base_client import IEthereumClient # Import the abstract client interface
-from .strategies.base_strategy import MutationStrategy # Import base class from new location
-from .mutation_strategies.blob_mutation import BlobTxMutationStrategy # Import BlobTxMutationStrategy
-
-# TODO: Set up a proper logger for this module
-# import logging
-# logger = logging.getLogger(__name__)
+from .clients.base_client import IEthereumClient
+from .strategies.base_strategy import MutationStrategy
+from .mutation_strategies.blob_mutation import BlobTxMutationStrategy
 
 class CompositeMutationStrategy(MutationStrategy):
     """

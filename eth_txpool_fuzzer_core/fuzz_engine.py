@@ -1,4 +1,3 @@
-# eth_txpool_fuzzer_core/fuzz_engine.py
 """
 Core fuzzing engine components: Seed, SeedDatabase, and the main FuzzEngine class.
 This module orchestrates the fuzzing process, managing states, inputs, and mutations.
@@ -13,12 +12,8 @@ from .accounts import AccountManager
 from .clients.base_client import IEthereumClient
 from .state import get_symbolic_pool_state, get_txpool_energy
 from .exploit_detectors import ExploitCondition
-from .strategies.base_strategy import MutationStrategy # Import MutationStrategy from its new location
+from .strategies.base_strategy import MutationStrategy
 from . import config as core_config
-
-# TODO: Set up a proper logger for this module
-# import logging
-# logger = logging = logging.getLogger(__name__)
 
 class Seed:
     """

@@ -1,27 +1,24 @@
-# eth_txpool_fuzzer_core/tx.py
 """
 Defines the basic data structures for transactions and fuzzing inputs.
 """
 from typing import Optional, List
-from web3.types import HexBytes # For blob_versioned_hashes
+from web3.types import HexBytes
 
 class Tx:
     """
     Represents a single transaction "intent" or "instruction" within the fuzzing logic.
-    It contains parameters that the fuzzer uses to construct and sequence transactions.
     """
     def __init__(self,
-                 account_manager_index: int, # Index referring to AccountManager's list of accounts
-                 sender_address: str,        # Sender's Ethereum address (checksummed)
-                 nonce: int,                 # Nonce for this transaction, determined by fuzzing logic
-                 price: int,                 # Gas price for this transaction (legacy/EIP-1559 gasPrice, or maxFeePerGas for EIP-4844)
-                 value: int,                 # Value field, often used symbolically in fuzzing (e.g., for C/O logic)
-                                             # or as actual Ether value for transfers.
-                 tx_type: int = 0,           # Transaction type: 0 (legacy), 1 (EIP-2930), 2 (EIP-1559), 3 (EIP-4844)
-                 max_priority_fee_per_gas: Optional[int] = None, # EIP-1559/EIP-4844
-                 max_fee_per_blob_gas: Optional[int] = None,     # EIP-4844
-                 blob_versioned_hashes: Optional[List[HexBytes]] = None, # EIP-4844
-                 tx_hash_on_submission: Optional[str] = None # Actual hash if/when submitted
+                 account_manager_index: int,
+                 sender_address: str,
+                 nonce: int,
+                 price: int,
+                 value: int,
+                 tx_type: int = 0,
+                 max_priority_fee_per_gas: Optional[int] = None,
+                 max_fee_per_blob_gas: Optional[int] = None,
+                 blob_versioned_hashes: Optional[List[HexBytes]] = None,
+                 tx_hash_on_submission: Optional[str] = None
                 ):
         self.account_manager_index: int = account_manager_index
         self.sender_address: str = sender_address

@@ -1,12 +1,11 @@
-# eth_txpool_fuzzer_core/accounts.py
 """
 Manages Ethereum accounts, private keys, and nonces for fuzzing operations.
 """
 import pandas as pd
-from web3 import Web3 # Web3.py library for Ethereum interactions
+from web3 import Web3
 from typing import Dict, List, Optional
 
-from . import config as core_config # For default key file paths and other constants
+from . import config as core_config
 
 class AccountManager:
     """
@@ -29,12 +28,10 @@ class AccountManager:
         if key_file_paths is None:
             key_file_paths = [core_config.DEFAULT_KEY_FILE_PRIMARY, core_config.DEFAULT_KEY_FILE_SECONDARY]
 
-        self.key_storage: Dict[str, str] = {}  # Maps checksummed address to private key string
-        self.account_addresses: List[str] = [] # Ordered list of loaded checksummed account addresses
-        self.address_to_internal_index: Dict[str, int] = {} # Maps address to its index in self.account_addresses
-        
-        # Nonce management: tracks the next nonce to be used by the fuzzer for each account.
-        # This might differ from the on-chain nonce if transactions are intentionally gapped or replaced.
+        self.key_storage: Dict[str, str] = {}
+        self.account_addresses: List[str] = []
+        self.address_to_internal_index: Dict[str, int] = {}
+
         self.fuzzer_nonces: Dict[str, int] = {}
 
         self._load_accounts_from_files(key_file_paths, max_accounts_to_load)
@@ -42,7 +39,6 @@ class AccountManager:
 
     def _load_accounts_from_files(self, file_paths: List[str], limit: int):
         """Loads account public and private keys from specified CSV files."""
-        # TODO: Implement proper logging instead of print statements
         print(f"INFO: AccountManager attempting to load up to {limit} accounts.")
         loaded_count = 0
         for file_path in file_paths:
@@ -54,7 +50,7 @@ class AccountManager:
                 for _, row_data in key_data_frame.iterrows():
                     if loaded_count >= limit:
                         break
-                    
+
                     if 'pub_key' not in row_data or 'priv_key' not in row_data:
                         print(f"WARN: Skipping row in {file_path} due to missing 'pub_key' or 'priv_key'. Row: {row_data}")
                         continue
@@ -62,7 +58,6 @@ class AccountManager:
                     try:
                         address_str = Web3.to_checksum_address(row_data['pub_key'])
                         private_key_str = row_data['priv_key']
-                        # Basic validation for private key format (e.g., 64 hex chars, optionally 0x prefixed)
                         if not (len(private_key_str) == 64 or (private_key_str.startswith('0x') and len(private_key_str) == 66)):
                             print(f"WARN: Skipping row in {file_path} due to potentially invalid private key format for {address_str}.")
                             continue
@@ -79,7 +74,7 @@ class AccountManager:
                 print(f"WARN: Key file not found: {file_path}")
             except pd.errors.EmptyDataError:
                 print(f"WARN: Key file is empty: {file_path}")
-            except Exception as e: # Catch other potential pandas or file errors
+            except Exception as e:
                 print(f"ERROR: Failed to load or parse key file {file_path}: {e}")
 
         if not self.account_addresses:
@@ -108,7 +103,6 @@ class AccountManager:
         if address in self.key_storage:
             self.fuzzer_nonces[address] = nonce
             return True
-        # TODO: Log warning
         print(f"WARN: Attempted to set nonce for unmanaged account {address}")
         return False
 
@@ -120,7 +114,6 @@ class AccountManager:
         if address in self.fuzzer_nonces:
             self.fuzzer_nonces[address] += 1
             return self.fuzzer_nonces[address]
-        # TODO: Log warning
         print(f"WARN: Attempted to increment nonce for unmanaged account {address}")
         return None
 
@@ -134,7 +127,7 @@ class AccountManager:
         if 0 <= index < len(self.account_addresses):
             return self.account_addresses[index]
         return None
-    
+
     def get_index_by_address(self, address: str) -> Optional[int]:
         """Gets the internal load order index of a checksummed account address."""
         return self.address_to_internal_index.get(address)
